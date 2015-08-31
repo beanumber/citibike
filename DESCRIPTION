@@ -1,0 +1,26 @@
+Package: citibike
+Title: Data about bike rentals in NYC
+Version: 0.1.0.9000
+Authors@R: as.person(c(
+    "Ben Baumer <ben.baumer@gmail.com> [aut, cre]", 
+    "Nicholas J. Horton <nhorton@amherst.edu> [aut]"
+  ))
+Description: ETL framework for CitiBike data
+License: CC0
+LazyData: true
+Imports: 
+  etl,
+  dplyr,
+  DBI
+Depends: 
+  R (>= 2.10)
+Suggests:
+  knitr,
+  magrittr,
+  methods,
+  RSQLite,
+  RPostgreSQL,
+  RMySQL
+URL: http://github.com/beanumber/citibike
+BugReports: https://github.com/beanumber/citibike/issues
+VignetteBuilder: knitr
