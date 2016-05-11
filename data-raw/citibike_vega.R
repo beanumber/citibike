@@ -32,8 +32,6 @@ citibike_download<- function( year, month ){
   read_csv(unzip( filename ))
 }
 
-# citibike_download(2016,01)
+data <- citibike_download(2016,01)
 data<-citibike_load(2016,01)
 head(data)
-
-                
