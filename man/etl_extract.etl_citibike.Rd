@@ -29,23 +29,15 @@ If a \code{year} and/or \code{month} is specified, then
 only flight data from matching months is used.
 }
 \examples{
-db <- "~/dumps/citibike/db.sqlite3"
 bikes <- etl("citibike", dir = "~/dumps/citibike/")
+bikes \%>\%
+  etl_extract()
 
-\dontrun{
-library(dplyr)
-if (require(RMySQL)) {
-# must have pre-existing database "airlines"
-db <- src_mysql(user = "mysql", password = "mysql", dbname = "airlines")
-}
-library(etl)
-etl_citibike <- etl_connect("airlines", db, dir = "~/dumps/airlines")
-# get one entire year of data
-etl_citibike <- etl_citibike \%>\%
-  etl_extract(year = 2013) \%>\%
-  etl_transform(month = 6) \%>\%
-  etl_load(year = 2013, month = 6)
-}
+bikes <- etl("citibike", dir = "~/dumps/citibike/")
+bikes \%>\%
+  etl_extract() \%>\%
+  etl_transform() \%>\%
+  etl_load()
 
 #' # check the results
 \dontrun{

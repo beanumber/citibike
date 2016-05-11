@@ -8,15 +8,15 @@
 #' @export
 #' 
 #' @examples 
-#' db <- "~/dumps/citibike/db.sqlite3"
 #' bikes <- etl("citibike", dir = "~/dumps/citibike/")
+#' bikes %>%
+#'   etl_extract()
 
 etl_extract.etl_citibike <- function(obj, year = 2015, month = 1, ...) {
   base_url <- "https://s3.amazonaws.com/tripdata/"
   src <- sprintf(paste0(base_url, "%04d%02d-citibike-tripdata.zip"), year, month)
-#  dir <- attr(obj, "raw_dir")
-  dir = "~/dumps/citibike/raw/"
-  lcl <- paste0(dir, basename(src))
+  dir <- attr(obj, "raw_dir")
+  lcl <- paste0(dir, "/", basename(src))
   
   download.file(src, destfile = lcl, method = 'curl')
 }
