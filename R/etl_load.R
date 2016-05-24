@@ -5,7 +5,7 @@
 #' 
 #' @examples
 #' 
-#' bikes <- etl("citibike", dir = "~/dumps/citibike/")
+#' bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 #' bikes %>%
 #'   etl_extract() %>%
 #'   etl_transform() %>%
