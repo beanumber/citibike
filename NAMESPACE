@@ -2,5 +2,4 @@
 
 S3method(etl_extract,etl_citibike)
 S3method(etl_load,etl_citibike)
-S3method(etl_transform,etl_citibike)
 importFrom(DBI,dbWriteTable)

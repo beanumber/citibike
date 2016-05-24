@@ -6,7 +6,7 @@
 \alias{etl_transform.etl_citibike}
 \title{etl_extract}
 \usage{
-\method{etl_extract}{etl_citibike}(obj, year = 2015, month = 1, ...)
+\method{etl_extract}{etl_citibike}(obj, ...)
 
 \method{etl_load}{etl_citibike}(obj, year = 2015, month = 1, ...)
 
@@ -15,9 +15,9 @@
 \arguments{
 \item{obj}{an \code{\link{etl}} object}
 
-\item{year}{a year represented as a four-digit integer}
-
 \item{...}{arguments passed to methods}
+
+\item{year}{a year represented as a four-digit integer}
 
 \item{months}{a vector of integers representing the months}
 }
@@ -29,11 +29,11 @@ If a \code{year} and/or \code{month} is specified, then
 only flight data from matching months is used.
 }
 \examples{
-bikes <- etl("citibike", dir = "~/dumps/citibike/")
+bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
   etl_extract()
 
-bikes <- etl("citibike", dir = "~/dumps/citibike/")
+bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
   etl_extract() \%>\%
   etl_transform() \%>\%
