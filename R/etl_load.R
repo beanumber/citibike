@@ -1,6 +1,6 @@
 #' @rdname etl_extract.etl_citibike
 #' @importFrom DBI dbWriteTable
-#' @method etl_load etl_citibike 
+#' @method etl_load etl_citibike
 #' @export
 #' 
 #' @examples

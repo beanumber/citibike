@@ -1,14 +1,12 @@
 #' @rdname etl_extract.etl_citibike
+#' @method etl_transform etl_citibike
 #' @export
-#' #' @examples 
-#'
-#' bikes %>%
-#'   etl_transform()
 
-etl_transform.etl_citibike <- function(obj, year = 2015, month = 1, ...) {
+etl_transform.etl_citibike <- function(obj, ...) {
   dir <- attr(obj, "raw_dir")
-  src <- sprintf(paste0(dir, "/%04d%02d-citibike-tripdata.zip"), year, month)
+  src <- list.files(dir, full.names = TRUE)
   new_dir <- attr(obj, "load_dir")
-  unzip(src, exdir = new_dir)
+  for (i in src){
+    utils::unzip(src, exdir = new_dir)}
+  invisible(obj)
 }
-

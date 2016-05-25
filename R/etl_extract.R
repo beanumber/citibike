@@ -1,11 +1,8 @@
 #' etl_extract
 #' @rdname etl_extract.etl_citibike
-#' @inheritParams etl::etl_extract
-#' @param year a year represented as a four-digit integer
-#' @param months a vector of integers representing the months
-#' @details If a \code{year} and/or \code{month} is specified, then
-#' only flight data from matching months is used.
 #' @export
+#' @inheritParams etl::etl_extract
+#' @details The function downloads all the data from citibike website.
 #' 
 #' @examples 
 #' bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
@@ -34,6 +31,7 @@ etl_extract.etl_citibike <- function(obj, ...) {
   src<- unlist(src)
   dir <- attr(obj, "raw_dir")
   for (url in src){
-    download.file(url, destfile = paste0(dir, "/", basename(url)), method = 'curl')
+    download.file(url, destfile = paste0(dir, "/", basename(url)), method = "libcurl" )
   }
+  invisible(obj)
 }

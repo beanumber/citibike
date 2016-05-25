@@ -8,9 +8,9 @@
 \usage{
 \method{etl_extract}{etl_citibike}(obj, ...)
 
-\method{etl_load}{etl_citibike}(obj, year = 2015, month = 1, ...)
+\method{etl_load.etl_citibike}{}(obj, year = 2015, month = 1, ...)
 
-\method{etl_transform}{etl_citibike}(obj, year = 2015, month = 1, ...)
+\method{etl_transform.etl_citibike}{}(obj, ...)
 }
 \arguments{
 \item{obj}{an \code{\link{etl}} object}
