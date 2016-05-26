@@ -28,14 +28,12 @@
 etl_load.etl_citibike <- function(obj) {
   dir <- attr(obj, "load_dir")
   src <- list.files(dir, full.names = TRUE)
-  push_month<- function(obj,csv,..){
-    # write the table directly to the DB
-    message(paste("Importing bike data from", csv, "to the database..."))
-    if(DBI::dbWriteTable(obj$con, "trips", csv, append= TRUE, ...)) {
-      message( "Data was successfully written to database.")
-    }
+  # write the table to the DB
+  message("Writing flight data to the database...")
+  sapply()
+  for (i in src){
+    DBI::dbWriteTable(obj$con, "trips", i, append = TRUE, overwrite= FALSE, ...)
   }
-  sapply(src, push_month, obj = obj, ...)
   invisible(obj)
 }
 
