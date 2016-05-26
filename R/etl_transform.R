@@ -7,6 +7,6 @@ etl_transform.etl_citibike <- function(obj, ...) {
   src <- list.files(dir, full.names = TRUE)
   new_dir <- attr(obj, "load_dir")
   for (i in src){
-    utils::unzip(src, exdir = new_dir)}
+    unzip(i, exdir = new_dir)}
   invisible(obj)
 }
