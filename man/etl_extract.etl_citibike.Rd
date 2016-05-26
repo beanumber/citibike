@@ -8,7 +8,7 @@
 \usage{
 \method{etl_extract}{etl_citibike}(obj, ...)
 
-\method{etl_load}{etl_citibike}(obj, year = 2015, month = 1, ...)
+\method{etl_load}{etl_citibike}(obj)
 
 \method{etl_transform}{etl_citibike}(obj, ...)
 }
@@ -33,6 +33,10 @@ bikes \%>\%
   etl_extract() \%>\%
   etl_transform() \%>\%
   etl_load()
+ library(RSQLite)
+ my_db<- src_sqlite( path= bikes$path, create= TRUE)
+ my_tbl<- tbl(my_db,"trips")
+ head(my_tbl)
 
 #' # check the results
 \dontrun{
