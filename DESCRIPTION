@@ -3,14 +3,19 @@ Title: Data about bike rentals in NYC
 Version: 0.1.0.9001
 Authors@R: as.person(c(
     "Ben Baumer <ben.baumer@gmail.com> [aut, cre]", 
-    "Nicholas J. Horton <nhorton@amherst.edu> [aut]"
+    "Weijia Zhang Vega <wzhang23@smith.edu> [aut]",
+    "Nicholas J. Horton <nhorton@amherst.edu> [ctb]"
   ))
-Description: ETL framework for CitiBike data
+Description: CitiBike provides rental bicycles all over New York City. This 
+    package allows the user to download and process these data in a sensible
+    way. 
 License: CC0
 LazyData: true
 Imports:
     dplyr,
-    DBI
+    DBI,
+    rvest,
+    xml2
 Depends:
     R (>= 2.10),
     etl

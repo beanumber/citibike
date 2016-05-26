@@ -8,7 +8,7 @@
 \usage{
 \method{etl_extract}{etl_citibike}(obj, ...)
 
-\method{etl_load}{etl_citibike}(obj)
+\method{etl_load}{etl_citibike}(obj, schema = FALSE, ...)
 
 \method{etl_transform}{etl_citibike}(obj, ...)
 }
@@ -16,6 +16,15 @@
 \item{obj}{an \code{\link{etl}} object}
 
 \item{...}{arguments passed to methods}
+
+\item{schema}{Either a logical, a filename pointing to SQL schema file, or a character
+vector containing the schema itself. If \code{schema = TRUE}, then the built-in
+schema will be used. Note
+that the flavor of SQL in this file must match the type of the source. That is,
+if your object is of type \code{\link[dplyr]{src_mysql}}, then make sure that
+the schema you specify here is written in MySQL (and not PostgreSQL). Please
+note that SQL syntax is not, in general, completely portable. Use with caution, as this may
+clobber any existing data you have in an existing database.}
 }
 \description{
 etl_extract
@@ -24,24 +33,25 @@ etl_extract
 The function downloads all the data from citibike website.
 }
 \examples{
+\dontrun{
 bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
   etl_extract()
+}
 
+\dontrun{
 bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
   etl_extract() \%>\%
   etl_transform() \%>\%
   etl_load()
- library(RSQLite)
- my_db<- src_sqlite( path= bikes$path, create= TRUE)
- my_tbl<- tbl(my_db,"trips")
- head(my_tbl)
 
+trips <- tbl(bikes,"trips")
+head(trips)
+}
 #' # check the results
 \dontrun{
-flights.db <- tbl(db, "flights")
-flights.db \%>\%
+trips \%>\%
   group_by(year, origin) \%>\%
   summarise(N = n(), min.month = min(month), max.month = max(month)) \%>\%
   arrange(desc(N))

@@ -5,34 +5,33 @@
 #' 
 #' @examples
 #' 
+#' \dontrun{
 #' bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 #' bikes %>%
 #'   etl_extract() %>%
 #'   etl_transform() %>%
 #'   etl_load()
-#'  library(RSQLite)
-#'  my_db<- src_sqlite( path= bikes$path, create= TRUE)
-#'  my_tbl<- tbl(my_db,"trips")
-#'  head(my_tbl)
 #' 
+#' trips <- tbl(bikes,"trips")
+#' head(trips)
+#' }
 #' #' # check the results
 #' \dontrun{
-#' flights.db <- tbl(db, "flights")
-#' flights.db %>%
+#' trips %>%
 #'   group_by(year, origin) %>%
 #'   summarise(N = n(), min.month = min(month), max.month = max(month)) %>%
 #'   arrange(desc(N))
 #' }
 
 
-etl_load.etl_citibike <- function(obj) {
+etl_load.etl_citibike <- function(obj, schema = FALSE, ...) {
   dir <- attr(obj, "load_dir")
   src <- list.files(dir, full.names = TRUE)
   # write the table to the DB
   message("Writing flight data to the database...")
   sapply()
   for (i in src){
-    DBI::dbWriteTable(obj$con, "trips", i, append = TRUE, overwrite= FALSE, ...)
+    DBI::dbWriteTable(obj$con, "trips", i, append = TRUE, overwrite = FALSE, ...)
   }
   invisible(obj)
 }
