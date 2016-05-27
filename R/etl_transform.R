@@ -3,11 +3,12 @@
 #' @importFrom utils unzip
 #' @export
 
-etl_transform.etl_citibike <- function(obj, ...) {
+etl_transform.etl_citibike <- function(obj, years = 2015, months = 1:12, ...) {
   dir <- attr(obj, "raw_dir")
   src <- list.files(dir, full.names = TRUE)
   new_dir <- attr(obj, "load_dir")
-  for (i in src){
-    utils::unzip(i, exdir = new_dir)}
+  for (i in src) {
+    utils::unzip(i, exdir = new_dir)
+  }
   invisible(obj)
 }

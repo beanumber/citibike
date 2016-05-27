@@ -6,17 +6,20 @@
 #' @importFrom rvest html_nodes html_text
 #' @importFrom xml2 read_html
 #' @importFrom utils download.file
+#' @importFrom lubridate year month days parse_date_time
 #' @inheritParams etl::etl_extract
+#' @param years a numeric vector indicating the years to be downloaded
+#' @param months a numeric vector indicating the months to be downloaded
 #' @details The function downloads all the data from citibike website.
 #' 
 #' @examples 
 #' \dontrun{
 #' bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 #' bikes %>%
-#'   etl_extract()
+#'   etl_extract(years = 2014, months = 8:9)
 #' }
 
-etl_extract.etl_citibike <- function(obj, ...) {
+etl_extract.etl_citibike <- function(obj, years = 2015, months = 1:12, ...) {
   raw_url <-"https://s3.amazonaws.com/tripdata/"
   webpage <- xml2::read_html(raw_url)
   keys <- webpage %>%
@@ -24,13 +27,14 @@ etl_extract.etl_citibike <- function(obj, ...) {
     rvest::html_text()
   zips <- grep("*.zip", keys, value = TRUE)
   zips <- zips[-1]
-  appendName <- function(file) {
-    base_url <- "https://s3.amazonaws.com/tripdata/"
-    sprintf(paste0("https://s3.amazonaws.com/tripdata/", file))
-  }
   
-  src <- lapply(zips, appendName)
-  src <- unlist(src)
+  # filter zips for only those months that correspond to years & months arguments
+  zips_df <- data.frame(zips, 
+             date = lubridate::parse_date_time(zips, orders = "%Y%m") + lubridate::days(1)) %>%
+    filter(lubridate::year(date) %in% years & lubridate::month(date) %in% months)
+  
+  src <- paste0(raw_url, zips_df$zips)
+  
   smart_download(obj, src)
   invisible(obj)
 }

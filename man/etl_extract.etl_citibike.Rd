@@ -6,14 +6,19 @@
 \alias{etl_transform.etl_citibike}
 \title{etl_extract}
 \usage{
-\method{etl_extract}{etl_citibike}(obj, ...)
+\method{etl_extract}{etl_citibike}(obj, years = 2015, months = 1:12, ...)
 
-\method{etl_load}{etl_citibike}(obj, schema = FALSE, ...)
+\method{etl_load}{etl_citibike}(obj, schema = FALSE, years = 2015,
+  months = 1:12, ...)
 
-\method{etl_transform}{etl_citibike}(obj, ...)
+\method{etl_transform}{etl_citibike}(obj, years = 2015, months = 1:12, ...)
 }
 \arguments{
 \item{obj}{an \code{\link{etl}} object}
+
+\item{years}{a numeric vector indicating the years to be downloaded}
+
+\item{months}{a numeric vector indicating the months to be downloaded}
 
 \item{...}{arguments passed to methods}
 
@@ -36,7 +41,7 @@ The function downloads all the data from citibike website.
 \dontrun{
 bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
-  etl_extract()
+  etl_extract(years = 2014, months = 8:9)
 }
 
 \dontrun{

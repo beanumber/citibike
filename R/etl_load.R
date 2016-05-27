@@ -24,14 +24,15 @@
 #' }
 
 
-etl_load.etl_citibike <- function(obj, schema = FALSE, ...) {
+etl_load.etl_citibike <- function(obj, schema = FALSE, years = 2015, months = 1:12, ...) {
   dir <- attr(obj, "load_dir")
   src <- list.files(dir, full.names = TRUE)
   # write the table to the DB
+  
   message("Writing flight data to the database...")
-  sapply()
   for (i in src){
     DBI::dbWriteTable(obj$con, "trips", i, append = TRUE, overwrite = FALSE, ...)
+#                      field.types = c(tripduration = "int", starttime = "text"))
   }
   invisible(obj)
 }
