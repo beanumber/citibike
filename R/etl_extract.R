@@ -1,6 +1,6 @@
 #' etl_extract
 #' @rdname etl_extract.etl_citibike
-#' @export
+#' @method etl_extract etl_citibike
 #' @import etl
 #' @import dplyr
 #' @importFrom rvest html_nodes html_text
@@ -8,15 +8,15 @@
 #' @importFrom utils download.file
 #' @importFrom lubridate year month days parse_date_time
 #' @inheritParams etl::etl_extract
-#' @param years a numeric vector indicating the years to be downloaded
-#' @param months a numeric vector indicating the months to be downloaded
-#' @details The function downloads all the data from citibike website.
-#' 
+#' @param years a numeric vector indicating the years to be downloaded (default is 2015)
+#' @param months a numeric vector indicating the months to be downloaded (default is 1:12)
+#' @details This function downloads NYC CitiBike data from citibike website for years and months specified.
+#' @export
 #' @examples 
 #' \dontrun{
 #' bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 #' bikes %>%
-#'   etl_extract(years = 2014, months = 8:9)
+#'   etl_extract()
 #' }
 
 etl_extract.etl_citibike <- function(obj, years = 2015, months = 1:12, ...) {

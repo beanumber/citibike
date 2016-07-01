@@ -25,7 +25,6 @@ Suggests:
     magrittr,
     methods,
     RSQLite,
-    RPostgreSQL,
     RMySQL
 URL: http://github.com/beanumber/citibike
 BugReports: https://github.com/beanumber/citibike/issues

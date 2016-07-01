@@ -1,10 +1,11 @@
+#' etl_load
 #' @rdname etl_extract.etl_citibike
 #' @importFrom DBI dbWriteTable
 #' @method etl_load etl_citibike
+#' @inheritParams etl::etl_extract
+#' @details This function loads NYC CitiBike data into a SQLite database for years and months specified.
 #' @export
-#' 
 #' @examples
-#' 
 #' \dontrun{
 #' bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 #' bikes %>%

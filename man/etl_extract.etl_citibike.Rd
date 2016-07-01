@@ -16,9 +16,9 @@
 \arguments{
 \item{obj}{an \code{\link{etl}} object}
 
-\item{years}{a numeric vector indicating the years to be downloaded}
+\item{years}{a numeric vector indicating the years to be downloaded (default is 2015)}
 
-\item{months}{a numeric vector indicating the months to be downloaded}
+\item{months}{a numeric vector indicating the months to be downloaded (default is 1:12)}
 
 \item{...}{arguments passed to methods}
 
@@ -33,9 +33,17 @@ clobber any existing data you have in an existing database.}
 }
 \description{
 etl_extract
+
+etl_load
+
+etl_transform
 }
 \details{
-The function downloads all the data from citibike website.
+This function downloads NYC CitiBike data from citibike website for years and months specified.
+
+This function loads NYC CitiBike data into a SQLite database for years and months specified.
+
+This function unzips NYC CitiBike data for years and months specified.
 }
 \examples{
 \dontrun{
@@ -43,7 +51,6 @@ bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
   etl_extract(years = 2014, months = 8:9)
 }
-
 \dontrun{
 bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
@@ -60,6 +67,12 @@ trips \%>\%
   group_by(year, origin) \%>\%
   summarise(N = n(), min.month = min(month), max.month = max(month)) \%>\%
   arrange(desc(N))
+}
+\dontrun{
+bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
+bikes \%>\%
+  etl_extract(years = 2014, months = 8:9) \%>\%
+  etl_transform()
 }
 }
 
