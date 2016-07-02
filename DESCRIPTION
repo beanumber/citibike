@@ -25,7 +25,8 @@ Suggests:
     magrittr,
     methods,
     RSQLite,
-    RMySQL
+    RMySQL,
+    rmarkdown
 URL: http://github.com/beanumber/citibike
 BugReports: https://github.com/beanumber/citibike/issues
 VignetteBuilder: knitr

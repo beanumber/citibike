@@ -32,11 +32,11 @@ etl_load.etl_citibike <- function(obj, schema = FALSE, years = 2015, months = 1:
   
   #valid years and month; create corresponding path
   year_month <- valid_year_month(years, months) %>%
-    mutate(month = ifelse(month<10, paste0("0",month), month))%>%
-    mutate(year_month = paste0(year, month)) %>%
-    mutate(zip_files = paste0(year_month, "-citibike-tripdata.csv")) %>%
-    filter(zip_files %in% files) %>%
-    mutate(path = paste0(dir,"/",zip_files))
+    mutate_(month = ifelse(month<10, paste0("0",month), month))%>%
+    mutate_(year_month = paste0(year, month)) %>%
+    mutate_(zip_files = paste0(year_month, "-citibike-tripdata.csv")) %>%
+    filter_(~zip_files %in% files) %>%
+    mutate_(path = ~paste0(dir,"/",zip_files))
   path <- year_month$path
   
   #Write to Table

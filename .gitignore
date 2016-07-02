@@ -5,3 +5,4 @@
 *.zip
 *-citibike-tripdata.csv
 file
+inst/doc

@@ -19,11 +19,11 @@ etl_transform.etl_citibike <- function(obj, years = 2015, months = 1:12, ...) {
   files <- basename(src)
   
   year_month <- valid_year_month(years, months) %>%
-    mutate(month = ifelse(month<10, paste0("0",month), month))%>%
-    mutate(year_month = paste0(year, month)) %>%
-    mutate(zip_files = paste0(year_month, "-citibike-tripdata.zip")) %>%
-    filter(zip_files %in% files) %>%
-    mutate(path = paste0(dir,"/",zip_files))
+    mutate_(month = ifelse(month<10, paste0("0",month), month))%>%
+    mutate_(year_month = paste0(year, month)) %>%
+    mutate_(zip_files = paste0(year_month, "-citibike-tripdata.zip")) %>%
+    filter_(~zip_files %in% files) %>%
+    mutate_(path = ~paste0(dir,"/",zip_files))
   path <- year_month$path
   new_dir <- attr(obj, "load_dir")
   for (i in path) {

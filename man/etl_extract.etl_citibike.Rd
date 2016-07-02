@@ -49,14 +49,14 @@ This function unzips NYC CitiBike data for years and months specified.
 \dontrun{
 bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
-  etl_extract(years = 2014, months = 8:9)
+  etl_extract()
 }
 \dontrun{
 bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
-  etl_extract() \%>\%
-  etl_transform() \%>\%
-  etl_load()
+  etl_extract(years = 2015, months = 1:2) \%>\%
+  etl_transform(years = 2015, months = 1) \%>\%
+  etl_load(years = 2015, months = 1)
 
 trips <- tbl(bikes,"trips")
 head(trips)
@@ -71,7 +71,7 @@ trips \%>\%
 \dontrun{
 bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
 bikes \%>\%
-  etl_extract(years = 2014, months = 8:9) \%>\%
+  etl_extract() \%>\%
   etl_transform()
 }
 }
