@@ -1,0 +1,64 @@
+---
+title: "NYC CitiBike Trip Data"
+author: "Wencong (Priscilla) Li (liwencong1995@gmail.com)"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to use NYC CitiBike Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include=FALSE, message=FALSE}
+library(knitr)
+opts_chunk$set(fig.width = 6, fig.height = 4)
+```
+
+## NYC CitiBike Data 
+
+The `citibike` package provides a interface for urser who are not experts of SQL to create and maintain an SQL database of NYC CitiBike Data. For `citibike` package ursers, a reliable data storage directory is all they need . 
+
+## Get started:
+### Install packages
+The `etl` package provides the generic framework for the `citibike` package. To install the `citibike` package, you must install etl first. Since the `citibike`  packages currently live on GitHub and not on CRAN, you have to install it manually.
+
+```{r, eval=FALSE, message=FALSE}
+install.packages("devtools", repos="http://cran.rstudio.com/")
+devtools::install_github("beanumber/citibike")
+```
+
+### Load the package
+This command loads both `etl` and `dplyr`.
+```{r, message=FALSE}
+library(citibike)
+```
+
+### Database
+The `etl` function has three variables -- `object`, `dir`, and `db`.
+
+`object` is the etl object that you want to create. 
+
+`dir` is a local directory to store files. If you don't specify one, a temporary directory will be created for you.
+
+`db` is a connection to an SQL database. If you don't specify one, a SQLite database will be created for you in dir. MySQL or PostgreSQL database can also be created, but these require external configurations that can be hard to understand for people who are not familiar with SQL. 
+
+## NYC CitiBike Data
+## Getting Started
+The following code loads citibike data from 2015 January into a SQLite database.
+```{r}
+bikes <- etl("citibike", dir = "~/Desktop/citibike_data")
+bikes %>%
+  etl_extract(years = 2015, months = 1:2) %>%
+  etl_transform(years = 2015, months = 1) %>%
+  etl_load(years = 2015, months = 1)
+
+trips <- tbl(bikes,"trips")
+head(trips)
+
+trips %>%
+  group_by(year, origin) %>%
+  summarise(N = n(), min.month = min(month), max.month = max(month)) %>%
+  arrange(desc(N))
+```
+
+## More Examples
