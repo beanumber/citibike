@@ -5,7 +5,7 @@ Authors@R: as.person(c(
     "Ben Baumer <ben.baumer@gmail.com> [aut, cre]", 
     "Weijia Zhang Vega <wzhang23@smith.edu> [aut]",
     "Nicholas J. Horton <nhorton@amherst.edu> [ctb]",
-    "Wencong (Priscilla) Li <liwencong1995@gmail.com [aut]>"
+    "Wencong (Priscilla) Li <liwencong1995@gmail.com> [aut]"
   ))
 Description: CitiBike provides rental bicycles all over New York City. This 
     package allows the user to download and process these data in a sensible
