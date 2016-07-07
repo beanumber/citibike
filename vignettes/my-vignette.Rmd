@@ -30,7 +30,7 @@ Here are the variables included in NYC CitiBike dataset:
 *Gender (Zero=unknown; 1=male; 2=female)
 *Year of Birth
 
-## Get started:
+## Getting started:
 ### Install packages
 The `etl` package provides the generic framework for the `citibike` package. To install the `citibike` package, you must install etl first. Since the `citibike`  packages currently live on GitHub and not on CRAN, you have to install it manually.
 
@@ -43,13 +43,15 @@ devtools::install_github("beanumber/citibike")
 This command loads both `etl` and `dplyr`.
 ```{r, message=FALSE}
 library(citibike)
+library(lubridate)
+library(dplyr)
 ```
 
-### Database
+### etl
 The `etl` function has three variables -- `object`, `dir`, and `db`.
 For more information about `etl` function, please read the [etl doucumentation](https://github.com/beanumber/etl/blob/master/README.Rmd).
 
-## Getting Started
+### Populate a local database with citibike data
 The following code loads citibike data from 2015 January into a SQLite database.
 ```{r}
 bikes <- etl("citibike")
@@ -59,15 +61,50 @@ bikes %>%
 
 ```{r}
 trips <- tbl(bikes,"trips")
-head(trips)
+head(trips, 4)
 
-trips %>%
-  group_by(year, origin) %>%
-  summarise(N = n(), min.month = min(month), max.month = max(month)) %>%
-  arrange(desc(N))
+trips <- trips %>%
+  collect()
 ```
 
-## More Examples
+```{r}
+citibike_time <- trips %>%
+  select(starttime, stoptime) %>%
+  mutate(starttime = dmy_hm(starttime)) %>%
+  mutate(stoptime = dmy_hm(stoptime)) %>%
+  mutate(duration_time = as.numeric(stoptime-starttime))
 
+citibike_time <- citibike_time %>%
+  filter(duration_time >= 0)
+
+mean(citibike_time$duration_time)
+```
+
+## Examples
+```{r}
+citibike_start <- trips %>%
+  select(start.station.name, start.station.longitude, start.station.latitude) %>%
+  rename(longitude = start.station.longitude) %>%
+  rename(latitude = start.station.latitude)
+  
+if (require(leaflet)) {
+  leaflet(data = citibike_start) %>% 
+    addTiles() %>%
+    addCircles()
+}
+```
+
+```{r}
+citibike_end <- trips %>%
+  select(end.station.name, end.station.longitude, end.station.latitude) %>%
+  rename(longitude = end.station.longitude) %>%
+  rename(latitude = end.station.latitude)
+
+if (require(leaflet)) {
+  leaflet(data = citibike_end) %>% 
+    addTiles() %>%
+    addCircles()
+}
+```
 
 
