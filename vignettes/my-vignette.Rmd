@@ -18,17 +18,28 @@ opts_chunk$set(fig.width = 6, fig.height = 4)
 The `citibike` package provides a interface for urser who are not experts of SQL to create and maintain an SQL database of [NYC CitiBike Data](https://www.citibikenyc.com/system-data). For `citibike` package ursers, a reliable data storage directory is all they need . 
 
 Here are the variables included in NYC CitiBike dataset:
-*Trip Duration (seconds)
-*Start Time and Date
-*Stop Time and Date
-*Start Station Name
-*End Station Name
-*Station ID
-*Station Lat/Long
-*Bike ID
-*User Type (Customer = 24-hour pass or 7-day pass user; Subscriber = Annual Member)
-*Gender (Zero=unknown; 1=male; 2=female)
-*Year of Birth
+
+-Trip Duration (seconds)
+
+-Start Time and Date
+
+-Stop Time and Date
+
+-Start Station Name
+
+-End Station Name
+
+-Station ID
+
+-Station Lat/Long
+
+-Bike ID
+
+-User Type (Customer = 24-hour pass or 7-day pass user; Subscriber = Annual Member)
+
+-Gender (0=unknown; 1=male; 2=female)
+
+-Year of Birth
 
 ## Getting started:
 ### Install packages
@@ -56,7 +67,7 @@ The following code loads citibike data from 2015 January into a SQLite database.
 ```{r}
 bikes <- etl("citibike")
 bikes %>%
-  etl_create(years = 2015, months = 1)
+  etl_create(years = 2015, months = 2)
 ```
 
 ```{r}
