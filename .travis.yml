@@ -1,0 +1,24 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
+language: R
+sudo: false
+cache: packages
+
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+
+# System dependencies for HTTP calling
+r_binary_packages:
+ - dplyr
+ - DBI
+ - RSQLite
+ - RMySQL
+ - RPostgreSQL
+
+# Install the bleeding edge version of a package from github (eg to pick
+# up a not-yet-released bugfix)
+r_github_packages:
+ - beanumber/etl

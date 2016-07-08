@@ -1,3 +1,5 @@
+[![Travis-CI Build Status](https://travis-ci.org/beanumber/citibike.svg?branch=master)](https://travis-ci.org/beanumber/citibike)
+
 # citibike
 R package based on ETL framework to interface with NYC CitiBike data
 
