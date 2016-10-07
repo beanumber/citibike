@@ -92,7 +92,7 @@ mean(citibike_time$duration_time)
 ```
 
 ## Examples
-```{r}
+```{r, eval = FALSE}
 citibike_start <- trips %>%
   select(start.station.name, start.station.longitude, start.station.latitude) %>%
   rename(longitude = start.station.longitude) %>%
@@ -105,7 +105,7 @@ if (require(leaflet)) {
 }
 ```
 
-```{r}
+```{r,  eval = FALSE}
 citibike_end <- trips %>%
   select(end.station.name, end.station.longitude, end.station.latitude) %>%
   rename(longitude = end.station.longitude) %>%

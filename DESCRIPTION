@@ -27,7 +27,8 @@ Suggests:
     methods,
     RSQLite,
     RMySQL,
-    rmarkdown
+    rmarkdown,
+    leaflet
 URL: http://github.com/beanumber/citibike
 BugReports: https://github.com/beanumber/citibike/issues
 VignetteBuilder: knitr
