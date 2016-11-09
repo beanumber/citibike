@@ -22,12 +22,18 @@ etl_extract.etl_citibike <- function(obj,  years = 2013, months = 7, ...) {
   zips <- zips[-1]
   
   # filter zips for only those months that correspond to years & months arguments
-  zips_df <- data.frame(zips, 
-             date = lubridate::parse_date_time(zips, orders = "%Y%m") + lubridate::days(1)) %>%
-    filter(lubridate::year(date) %in% years & lubridate::month(date) %in% months)
+  zips_df <- data.frame(zips, date = lubridate::parse_date_time(zips, orders = "%Y%m") + lubridate::days(1)) 
+  # check if the date is valid
+  # the date dataframe after filtering
+  zips_valid<- filter(zips_df, lubridate::year(date) %in% years & lubridate::month(date) %in% months)
   
-  src <- paste0(raw_url, zips_df$zips)
-  
-  smart_download(obj, src)
-  invisible(obj)
+  if(nrow(zips_valid) == 0){
+    print("Not a valid date")
+  } else{
+    src <- paste0(raw_url, zips_valid$zips)
+    
+    smart_download(obj, src)
+    invisible(obj)
+  }
 }
+
