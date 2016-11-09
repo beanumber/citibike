@@ -6,7 +6,7 @@
 #' @details This function unzips NYC CitiBike data for years and months specified. 
 #' @export
 etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
-  
+  message("Transforming raw data ...")
   dir <- attr(obj, "raw_dir")
   src <- list.files(dir, full.names = TRUE)
   files <- basename(src)
