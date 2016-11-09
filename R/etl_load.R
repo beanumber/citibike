@@ -15,7 +15,7 @@
 #' }
 
 
-etl_load.etl_citibike <- function(obj, schema = FALSE, years = 2013, months = 7, ...) {
+etl_load.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
   dir <- attr(obj, "load_dir")
   src <- list.files(dir, full.names = TRUE)
   files <- basename(src)

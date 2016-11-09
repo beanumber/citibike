@@ -8,8 +8,7 @@
 \usage{
 \method{etl_extract}{etl_citibike}(obj, years = 2013, months = 7, ...)
 
-\method{etl_load}{etl_citibike}(obj, schema = FALSE, years = 2013,
-  months = 7, ...)
+\method{etl_load}{etl_citibike}(obj, years = 2013, months = 7, ...)
 
 \method{etl_transform}{etl_citibike}(obj, years = 2013, months = 7, ...)
 }
