@@ -1,6 +1,6 @@
 ---
-title: "NYC CitiBike Trip Data"
-author: "Wencong (Priscilla) Li (liwencong1995@gmail.com)"
+title: "CitiBike"
+author: "Wencong (Priscilla) Li (liwencong1995@gmail.com) & Weijia (Vega) Zhang (wzhang23@smith.edu)"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -14,71 +14,109 @@ library(knitr)
 opts_chunk$set(fig.width = 6, fig.height = 4)
 ```
 
-## NYC CitiBike Data 
-The `citibike` package provides a interface for urser who are not experts of SQL to create and maintain an SQL database of [NYC CitiBike Data](https://www.citibikenyc.com/system-data). For `citibike` package ursers, a reliable data storage directory is all they need . 
+## ETL
 
-Here are the variables included in NYC CitiBike dataset:
+`citibike` is an R package that facilitates Extract - Transform - Load operations for [NYC CitiBike Data](https://www.citibikenyc.com/system-data). `citibike` inherits functions from [etl ](https://github.com/beanumber/etl/blob/master/README.Rmd), which is the parent package. Similarly to `etl`, `citibike` allows the user to pass the date arguments and get a populated SQL database back. 
 
--Trip Duration (seconds)
+## ETL citiBike
 
--Start Time and Date
-
--Stop Time and Date
-
--Start Station Name
-
--End Station Name
-
--Station ID
-
--Station Lat/Long
-
--Bike ID
-
--User Type (Customer = 24-hour pass or 7-day pass user; Subscriber = Annual Member)
-
--Gender (0=unknown; 1=male; 2=female)
-
--Year of Birth
-
-## Getting started:
-### Install packages
-The `etl` package provides the generic framework for the `citibike` package. To install the `citibike` package, you must install etl first. Since the `citibike`  packages currently live on GitHub and not on CRAN, you have to install it manually.
+`citibike` is dependent on `etl`. To get started, both packages need to be loaded.
 
 ```{r, eval=FALSE, message=FALSE}
 install.packages("devtools", repos="http://cran.rstudio.com/")
 devtools::install_github("beanumber/citibike")
 ```
 
-### Load the package
-This command loads both `etl` and `dplyr`.
 ```{r, message=FALSE}
+library(etl)
 library(citibike)
+```
+
+Instantiate an `etl` object using a string **citibike** that determines the class of the object. Specifiy the local directory for data storage.
+```{r}
+bikes <- etl("citibike", dir = "local_path")
+class(bikes)
+```
+
+## ?? Connect to a local or remote database
+
+## Extract
+
+Extract takes `years` and `months` parameters and allows user to fetch the data of specific date of interest. Note that the data is updated monthly. The default date is the starting month, which is ** July 2013**. If the user enters any date before that, the user will get an error message notification. The user could check the raw folder in the local directory that's created before. 
+
+
+```{r, eval= FALSE}
+# default
+etl_extract(bikes)
+
+# a specific month
+etl_extract(bikes, years = 2014, months = 9)
+
+# duration 
+etl_extract(bikes, years = 2015, moths = 3:6)
+
+# invalid date will bring up error message
+etl_extract(bikes, months = 3:5)
+```
+
+
+
+## Transform
+
+By default, `etl_transform` takes July 2013 data file and transform the raw data into CSV files. Similar to `etl_extract`, the user could specify the dates. The user could check the load folder of the local directory that has been created.
+```{r, eval = FALSE}
+bikes %>%
+  etl_transform()
+
+```
+
+## Load
+
+Import the CSV files into SQL and populate the SQL database with the transformed data.
+
+```{r, eval = FALSE}
+bikes %>%
+  etl_load()
+
+```
+
+
+## About the dataset 
+
+All of the tables contain the following columns:
+
+* Trip Duration (seconds)
+* Start Time and Date
+* Stop Time and Date
+* Start Station Name
+* End Station Name
+* Station ID
+* Station Lat/Long
+* Bike ID
+* User Type (Customer = 24-hour pass or 7-day pass user; Subscriber = Annual Member)
+* Gender (0=unknown; 1=male; 2=female) and Year of Birth.
+
+The user could choose which ones to look at for further analysis.
+
+## Examples
+
+```{r, message=FALSE}
 library(lubridate)
 library(dplyr)
 ```
 
-### etl
-The `etl` function has three variables -- `object`, `dir`, and `db`.
-For more information about `etl` function, please read the [etl doucumentation](https://github.com/beanumber/etl/blob/master/README.Rmd).
-
-### Populate a local database with citibike data
 The following code loads citibike data from 2015 January into a SQLite database.
-```{r}
+```{r,  eval = FALSE}
 bikes <- etl("citibike")
 bikes %>%
   etl_create(years = 2015, months = 2)
-```
 
-```{r}
 trips <- tbl(bikes,"trips")
 head(trips, 4)
 
 trips <- trips %>%
   collect()
-```
 
-```{r}
 citibike_time <- trips %>%
   select(starttime, stoptime) %>%
   mutate(starttime = dmy_hm(starttime)) %>%
@@ -89,10 +127,7 @@ citibike_time <- citibike_time %>%
   filter(duration_time >= 0)
 
 mean(citibike_time$duration_time)
-```
 
-## Examples
-```{r, eval = FALSE}
 citibike_start <- trips %>%
   select(start.station.name, start.station.longitude, start.station.latitude) %>%
   rename(longitude = start.station.longitude) %>%
@@ -103,9 +138,7 @@ if (require(leaflet)) {
     addTiles() %>%
     addCircles()
 }
-```
 
-```{r,  eval = FALSE}
 citibike_end <- trips %>%
   select(end.station.name, end.station.longitude, end.station.latitude) %>%
   rename(longitude = end.station.longitude) %>%
