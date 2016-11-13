@@ -23,4 +23,11 @@ etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
     utils::unzip(i, exdir = new_dir)
     }
   invisible(obj)
+  # rename
+  load_files <- list.files(new_dir)
+  load_files %>%
+    gsub("-", "", x = .) %>%
+    gsub("  Citi Bike trip data", "-citibike-tripdata", x = .) %>%
+    gsub("zip", "csv", x = .)
+
 }

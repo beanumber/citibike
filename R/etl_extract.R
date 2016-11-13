@@ -28,7 +28,7 @@ etl_extract.etl_citibike <- function(obj,  years = 2013, months = 7, ...) {
   zips_valid<- filter(zips_df, lubridate::year(date) %in% years & lubridate::month(date) %in% months)
   
   if(nrow(zips_valid) == 0){
-    print("Not a valid date")
+    warning("Invalid dates ignored")
   } else{
     src <- paste0(raw_url, zips_valid$zips)
     
