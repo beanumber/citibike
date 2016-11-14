@@ -22,11 +22,12 @@ etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
   for (i in path) {
     utils::unzip(i, exdir = new_dir)
     }
-  invisible(obj)
   # rename
   load_files <- list.files(new_dir)
   new_names <- load_files %>%
     gsub("-", "", x = .) %>%
     gsub("  Citi Bike trip data", "-citibike-tripdata", x = .)
   file.rename(from = file.path(new_dir,load_files), to = file.path(new_dir,new_names))
+  
+  invisible(obj)
 }

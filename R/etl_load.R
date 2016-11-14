@@ -30,7 +30,7 @@ etl_load.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
   path <- year_month$path
   
   #Write to Table
-  message("Writing flight data to the database...")
+  message("Writing bike data to the database...")
   for (i in path){
     DBI::dbWriteTable(obj$con, "trips", i, 
                       append = TRUE, overwrite = FALSE, ...)
