@@ -38,7 +38,10 @@ bikes <- etl("citibike", dir = "local_path")
 class(bikes)
 ```
 
-## ?? Connect to a local or remote database
+## Connect to a local or remote database
+
+`etl` works with a local or remote database, so as `citibike`. If no SQL source has been specified, a local `RSQLite` database will be created for the user. However, the user could also specify the path to an existing database using `dplyr::src_sql`.
+
 
 ## Extract
 
