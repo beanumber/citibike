@@ -1,0 +1,20 @@
+DROP TABLE IF EXISTS `trips`;
+
+CREATE TABLE `trips`(
+`tripduration` INT,
+`starttime` DATETIME,
+`stoptime` DATETIME,              
+`start.station.id` INT,
+`start.station.name` VARCHAR(45), 
+`start.station.latitude` DOUBLE,
+`start.station.longitude` DOUBLE,
+`end.station.id` INT,
+`end.station.name` VARCHAR(45),     
+`end.station.latitude` DOUBLE,
+`end.station.longitude` DOUBLE,
+`bikeid` INT,              
+`usertype` VARCHAR(45),
+`birth.year` YEAR,
+`gender` INT,
+PRIMARY KEY(`tripduration`)
+);
