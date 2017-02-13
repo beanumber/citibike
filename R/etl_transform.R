@@ -24,9 +24,21 @@ etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
     }
   # rename
   load_files <- list.files(new_dir)
-  new_names <- load_files %>%
-    gsub("-", "", x = .) %>%
-    gsub("  Citi Bike trip data", "-citibike-tripdata", x = .)
+  check_name <- function(file_name){
+    if(grepl("-citibike-tripdata", x = file_name) == FALSE){
+      new_name <- gsub("-", "", x = file_name)
+      new_name <- gsub("  Citi Bike trip data", "-citibike-tripdata", x = new_name)
+      new_name
+    }else{
+      file_name
+    }
+  }
+  new_names <- vector(mode="character", length=length(load_files))
+  count = 1
+  for (i in load_files){
+    new_names[count] <- check_name(i)
+    count = count +1
+  }
   file.rename(from = file.path(new_dir,load_files), to = file.path(new_dir,new_names))
   
   invisible(obj)
