@@ -17,7 +17,8 @@ Imports:
     DBI,
     lubridate,
     rvest,
-    xml2
+    xml2,
+    data.table
 Depends:
     R (>= 2.10),
     etl

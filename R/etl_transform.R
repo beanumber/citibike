@@ -1,7 +1,7 @@
 #' etl_transform
 #' @rdname etl_extract.etl_citibike
 #' @method etl_transform etl_citibike
-#' @importFrom utils unzip data.table
+#' @importFrom utils unzip 
 #' @inheritParams etl::etl_extract
 #' @details This function unzips NYC CitiBike data for years and months specified. 
 #' @export
