@@ -1,7 +1,7 @@
 #' etl_transform
 #' @rdname etl_extract.etl_citibike
 #' @method etl_transform etl_citibike
-#' @importFrom utils unzip
+#' @importFrom utils unzip data.table
 #' @inheritParams etl::etl_extract
 #' @details This function unzips NYC CitiBike data for years and months specified. 
 #' @export
@@ -40,6 +40,27 @@ etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
     count = count +1
   }
   file.rename(from = file.path(new_dir,load_files), to = file.path(new_dir,new_names))
+  # change the date format
+  for (i in load_files){
+    # read in file
+    data <- fread(input = paste(new_dir,i,sep = "/"))
+    # rename columns
+    colnames(data) <- c("Trip_Duration", "Start_Time","Stop_Time", "Start_Station_ID", "Start_Station_Name", 
+                        "Start_Station_Latitude", "Start_Station_Longitude", "End_Station_ID", "End_Station_Name",
+                        "End_Station_Latitude", "End_Station_Longitude","Bike_ID", "User_Type", "Birth_Year", "Gender")
+    # recognize date format
+    if(all(is.na(parse_date_time(head(data$Start_Time), orders= "mdY HMS"))) == FALSE){
+      # the format is month day year
+      data <- data %>%
+        mutate(Start_Time = parse_date_time(Start_Time, orders= "mdY HMS")) %>%
+        mutate(Stop_Time = parse_date_time(Stop_Time, orders= "mdY HMS")) 
+      
+    }else{
+      # write out file directly
+      
+    }
+    fwrite(x = data, paste(new_dir,i,sep = "/"), append = FALSE)
+  }
   
   invisible(obj)
 }
