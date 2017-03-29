@@ -16,25 +16,27 @@
 
 
 etl_load.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
+  # connect to the load folder
   dir <- attr(obj, "load_dir")
+  # list the files
   src <- list.files(dir, full.names = TRUE)
+  # get the base name of the files
   files <- basename(src)
   
-  #valid years and month; create corresponding path
+  # valid years and month; create corresponding path
   year_month <- valid_year_month(years, months) %>%
-    mutate(month = ifelse(month< 10, paste0("0",month), month))%>%
+    mutate_(month = ~ifelse(month< 10, paste0("0",month), month))%>%
     mutate_(year_month = ~paste0(year, month)) %>%
     mutate_(zip_files = ~paste0(year_month, "-citibike-tripdata.csv")) %>%
     filter_(~zip_files %in% files) %>%
-    mutate_(path = ~paste0(dir,"/",zip_files))
+    mutate_(path = ~paste0(dir, "/", zip_files))
   path <- year_month$path
   
-  #Write to Table
+  # write to Table
   message("Writing bike data to the database...")
-  for (i in path){
-    DBI::dbWriteTable(obj$con, "trips", i, 
-                      append = TRUE, overwrite = FALSE, ...)
-    }
+  lapply(path, function(x) DBI::dbWriteTable(obj$con, "trips", i, append = TRUE, 
+                                             overwrite = FALSE, ...))
+  
   invisible(obj)
 }
 
