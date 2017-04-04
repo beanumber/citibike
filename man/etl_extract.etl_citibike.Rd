@@ -15,9 +15,11 @@
 \arguments{
 \item{obj}{an \code{\link{etl}} object}
 
-\item{years}{a numeric vector indicating the years to be downloaded (default is 2013)}
+\item{years}{a numeric vector indicating the years to be 
+downloaded (default is 2013)}
 
-\item{months}{a numeric vector indicating the months to be downloaded (default is 7)}
+\item{months}{a numeric vector indicating the months to be 
+downloaded (default is 7)}
 
 \item{...}{arguments passed to methods}
 }
@@ -29,11 +31,15 @@ etl_load
 etl_transform
 }
 \details{
-This function downloads NYC CitiBike data from citibike website for years and months specified.
+This function downloads NYC CitiBike data from citibike website 
+for years and months specified. The downloaded files are saved as zip files 
+in the raw directory under the folder the user created
 
 This function loads NYC CitiBike data into a SQLite database for years and months specified.
 
-This function unzips NYC CitiBike data for years and months specified.
+This function unzips and reads in the NYC CitiBike data for years 
+and months specified into R. After cleaning up and reformatting, 
+R outputs the data and save as files.
 }
 \examples{
 \dontrun{

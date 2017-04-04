@@ -34,7 +34,7 @@ etl_load.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
   
   # write to Table
   message("Writing bike data to the database...")
-  lapply(path, function(x) DBI::dbWriteTable(obj$con, "trips", i, append = TRUE, 
+  lapply(path, function(x) DBI::dbWriteTable(obj$con, "trips", x, append = TRUE, 
                                              overwrite = FALSE, ...))
   
   invisible(obj)

@@ -15,5 +15,14 @@ CREATE TABLE `trips` (
   `Bike_ID` bigint(20) DEFAULT NULL,
   `User_Type` text,
   `Birth_Year` bigint(20) DEFAULT NULL,
-  `Gender` bigint(20) DEFAULT NULL
+  `Gender` bigint(20) DEFAULT NULL,
+  key`Start_Station_ID`(`Start_Station_ID`),
+  key`End_Station_ID`(`End_Station_ID`)
 ) 
+PARTITION BY RANGE ( YEAR(Start_Time) ) (
+    PARTITION p0 VALUES LESS THAN (2014),
+    PARTITION p1 VALUES LESS THAN (2015),
+    PARTITION p2 VALUES LESS THAN (2016),
+    PARTITION p3 VALUES LESS THAN (2017),
+    PARTITION p4 VALUES LESS THAN MAXVALUE
+);
