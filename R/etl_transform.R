@@ -28,15 +28,17 @@ etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
     mutate_(out_files = ~paste0(year_month, "-citibike-tripdata.csv"))%>%
     filter_(~zip_files %in% files) %>%
     mutate_(path = ~paste0(dir, "/", zip_files)) %>%
-    mutate_(out_path = ~paste0(new_dir, "/", out_files))
+    mutate_(out_path = ~paste0(new_dir, "/", out_files)) 
   # zip file path
   path <- year_month$path
   # valid csv path
   csv_path <- year_month$out_path
   # unzip files interested
   lapply(path, function(x) unzip(x, exdir = new_dir))
-  # rename
-  load_files <- year_month$out_files
+  # the original names
+  load_files <- list.files(new_dir, full.names = TRUE)
+  # the old names in the load directory
+  oldnames <- list.files(new_dir)
   # check if the name is in the right format
   check_name <- function(file_name){
     if(grepl("-citibike-tripdata", x = file_name) == FALSE){
@@ -51,8 +53,8 @@ etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
   # return the new valid names
   new_names <- do.call(rbind, lapply(load_files, function(x) check_name(x)))
   # rename the files
-  file.rename(from = file.path(new_dir, load_files), 
-              to = file.path(new_dir, new_names))
+  file.rename(from = file.path(new_dir, oldnames), 
+              to = file.path(new_dir, year_month$out_files))
   
   # the following function takes in the file of a csv file
   # modifies the data and outputs the file under the same name
