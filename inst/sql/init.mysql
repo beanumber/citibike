@@ -1,21 +1,21 @@
 DROP TABLE IF EXISTS `trips`;
 
 CREATE TABLE `trips` (
-  `Trip_Duration` bigint(20) DEFAULT NULL,
+  `Trip_Duration` smallint(4) DEFAULT NULL,
   `Start_Time` datetime NOT NULL,
   `Stop_Time` datetime NOT NULL,
-  `Start_Station_ID` bigint(20) DEFAULT NULL,
+  `Start_Station_ID` smallint(4) DEFAULT NULL,
   `Start_Station_Name` text,
   `Start_Station_Latitude` double DEFAULT NULL,
   `Start_Station_Longitude` double DEFAULT NULL,
-  `End_Station_ID` bigint(20) DEFAULT NULL,
+  `End_Station_ID` smallint(4) DEFAULT NULL,
   `End_Station_Name` text,
   `End_Station_Latitude` double DEFAULT NULL,
   `End_Station_Longitude` double DEFAULT NULL,
-  `Bike_ID` bigint(20) DEFAULT NULL,
+  `Bike_ID` smallint(4) DEFAULT NULL,
   `User_Type` text,
-  `Birth_Year` bigint(20) DEFAULT NULL,
-  `Gender` bigint(20) DEFAULT NULL,
+  `Birth_Year` smallint(4) DEFAULT NULL,
+  `Gender` smallint(2) DEFAULT NULL,
   key`Start_Station_ID`(`Start_Station_ID`),
   key`End_Station_ID`(`End_Station_ID`)
 ) 
