@@ -89,9 +89,7 @@ etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
     data.table::fwrite(x = data, csv_load_path, append = FALSE)
     
   }
-  
   # apply the function to each file
   lapply(csv_path, function(x) modify_file(x))
-  
   invisible(obj)
 }

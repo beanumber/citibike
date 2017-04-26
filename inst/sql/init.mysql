@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS `trips`;
-
 CREATE TABLE `trips` (
   `Trip_Duration` smallint(4) DEFAULT NULL,
   `Start_Time` datetime NOT NULL,
