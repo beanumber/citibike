@@ -44,4 +44,3 @@ bikes \%>\%
   etl_load()
 }
 }
-

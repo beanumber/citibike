@@ -1,12 +1,14 @@
 Package: citibike
 Title: Data about bike rentals in NYC
 Version: 0.1.0.9004
-Authors@R: as.person(c(
-    "Ben Baumer <ben.baumer@gmail.com> [aut, cre]", 
-    "Weijia Zhang Vega <wzhang23@smith.edu> [aut]",
-    "Nicholas J. Horton <nhorton@amherst.edu> [ctb]",
-    "Wencong (Priscilla) Li <liwencong1995@gmail.com> [aut]"
-  ))
+Date: 2017-08-31
+Authors@R: c(
+    person("Benjamin S.", "Baumer", email = "ben.baumer@gmail.com",
+      role = c("aut", "cre")),
+    person("Wencong", "Li", email = "liwencong1995@gmail.com", role = "aut"),
+    person("Weijia", "Zhang", email = "wzhang23@smith.edu", role = "aut"),
+    person("Nicholas", "Horton", email = "nhorton@amherst.edu", role = "ctb")
+    )
 Description: CitiBike provides rental bicycles all over New York City. This 
     package allows the user to download and process these data in a sensible
     way. 
@@ -33,4 +35,4 @@ Suggests:
 URL: http://github.com/beanumber/citibike
 BugReports: https://github.com/beanumber/citibike/issues
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
