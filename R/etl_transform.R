@@ -1,7 +1,7 @@
 #' etl_transform
 #' @rdname etl_extract.etl_citibike
 #' @method etl_transform etl_citibike
-#' @importFrom utils unzip
+#' @importFrom utils unzip head
 #' @importFrom data.table fread fwrite 
 #' @inheritParams etl::etl_extract
 #' @details This function unzips and reads in the NYC CitiBike data for years 
@@ -70,13 +70,13 @@ etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
                         "Bike_ID", "User_Type", "Birth_Year", "Gender")
     # check for date format
     if(suppressWarnings(all(is.na(
-      lubridate::parse_date_time(head(data$Start_Time), 
+      lubridate::parse_date_time(utils::head(data$Start_Time), 
       orders= c("mdY HMS","mdy HM")))) == FALSE)) {
       # change the format to ymd HMS
       data <- data %>%
-        dplyr::mutate(Start_Time = lubridate::parse_date_time(Start_Time, 
+        dplyr::mutate_(Start_Time = ~lubridate::parse_date_time(Start_Time, 
                                             orders = c("mdY HMS","mdy HM")),
-               Stop_Time = lubridate::parse_date_time(Stop_Time, 
+               Stop_Time = ~lubridate::parse_date_time(Stop_Time, 
                                            orders = c("mdY HMS","mdy HM")))  
     } else{
       # no need to change the format
