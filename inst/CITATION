@@ -1,0 +1,17 @@
+citHeader("To cite citibike in publications use:")
+
+citEntry(entry = "mastersthesis",
+  title        = "Improving access to open-source data about the {NYC} bike sharing system ({C}iti {B}ike)",
+  author       = personList(as.person("Weijia Zhang")),
+  school      = "Smith College",
+  year         = "2017",
+  month       = "5",
+  pages        = "1--84",
+  url          = "http://scholarworks.smith.edu/theses/1871/",
+
+  textVersion  =
+  paste("Weijia Zhang (2017).",
+        "Improving access to open-source data about the NYC bike sharing system (Citi Bike).",
+        "Honor's Thesis, Smith College, May, 1-84.",
+        "URL http://scholarworks.smith.edu/theses/1871/.")
+)
