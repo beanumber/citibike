@@ -1,6 +1,6 @@
 Package: citibike
 Title: Data about bike rentals in NYC
-Version: 0.1.0.9004
+Version: 0.1.1.9001
 Date: 2017-08-31
 Authors@R: c(
     person("Benjamin S.", "Baumer", email = "ben.baumer@gmail.com",
@@ -18,9 +18,9 @@ Imports:
     dplyr,
     DBI,
     lubridate,
+    readr,
     rvest,
     xml2,
-    data.table
 Depends:
     R (>= 2.10),
     etl

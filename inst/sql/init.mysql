@@ -1,27 +1,64 @@
 DROP TABLE IF EXISTS `trips`;
 CREATE TABLE `trips` (
-  `Trip_Duration` smallint(4) DEFAULT NULL,
-  `Start_Time` datetime NOT NULL,
-  `Stop_Time` datetime NOT NULL,
-  `Start_Station_ID` smallint(4) DEFAULT NULL,
-  `Start_Station_Name` text,
-  `Start_Station_Latitude` double DEFAULT NULL,
-  `Start_Station_Longitude` double DEFAULT NULL,
-  `End_Station_ID` smallint(4) DEFAULT NULL,
-  `End_Station_Name` text,
-  `End_Station_Latitude` double DEFAULT NULL,
-  `End_Station_Longitude` double DEFAULT NULL,
-  `Bike_ID` smallint(4) DEFAULT NULL,
-  `User_Type` text,
-  `Birth_Year` smallint(4) DEFAULT NULL,
-  `Gender` smallint(2) DEFAULT NULL,
-  key`Start_Station_ID`(`Start_Station_ID`),
-  key`End_Station_ID`(`End_Station_ID`)
-) 
-PARTITION BY RANGE ( YEAR(Start_Time) ) (
+  `duration` smallint(4) DEFAULT NULL,
+  `start_time` datetime NOT NULL,
+  `stop_time` datetime NOT NULL,
+  `start_station_id` smallint(4) DEFAULT NULL,
+  `end_station_id` smallint(4) DEFAULT NULL,
+  `bike_id` smallint(4) DEFAULT NULL,
+  `user_type` text,
+  `birth_year` smallint(4) DEFAULT NULL,
+  `gender` smallint(2) DEFAULT NULL,
+  KEY `start_station_id` (`start_station_id`),
+  KEY `end_station_id` (`end_station_id`),
+  KEY `start_time` (`start_time`),
+  KEY `stop_time` (`stop_time`),
+  KEY `bike_id` (`bike_id`),
+)  ENGINE=MyISAM
+PARTITION BY RANGE ( YEAR(start_time) ) (
     PARTITION p0 VALUES LESS THAN (2014),
     PARTITION p1 VALUES LESS THAN (2015),
     PARTITION p2 VALUES LESS THAN (2016),
     PARTITION p3 VALUES LESS THAN (2017),
-    PARTITION p4 VALUES LESS THAN MAXVALUE
+    PARTITION p4 VALUES LESS THAN (2018),
+    PARTITION p5 VALUES LESS THAN MAXVALUE
 );
+
+DROP TABLE IF EXISTS `station_months`;
+CREATE TABLE `station_months` (
+  `station_id` smallint(4) NOT NULL DEFAULT 0,
+  `name` text,
+  `earliest` datetime NOT NULL,
+  `latest` datetime NOT NULL,
+  `num_starts` smallint(4) DEFAULT NULL,
+  `num_stops` smallint(4) DEFAULT NULL,
+  `avg_lat` double DEFAULT NULL,
+  `avg_lon` double DEFAULT NULL,
+  PRIMARY KEY `station_id` (`station_id`, `earliest`)
+) ENGINE=MyISAM;
+
+
+DROP VIEW IF EXISTS `trip_summary`;
+CREATE VIEW `trip_summary` AS
+  SELECT YEAR(start_time) AS the_year, 
+    MONTH(start_time) AS the_month, 
+    COUNT(DISTINCT start_station_id) as num_start_stations,
+    COUNT(DISTINCT end_station_id) as num_end_stations,
+    sum(1) as num_trips
+  FROM trips
+  GROUP BY the_year, the_month;
+
+
+DROP VIEW IF EXISTS `station_summary`;
+CREATE VIEW `station_summary` AS
+  SELECT station_id, 
+    group_concat(distinct name) as name,
+    AVG(avg_lat) as lat,
+    AVG(avg_lon) as lon,
+    sum(1) as num_months, 
+    min(earliest) as earliest,
+    max(latest) as latest,
+    sum(num_starts) as num_starts, 
+    sum(num_stops) as num_stops
+  FROM station_months
+  GROUP BY station_id;

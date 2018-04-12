@@ -1,8 +1,10 @@
+utils::globalVariables(c("."))
+
 #' etl_transform
 #' @rdname etl_extract.etl_citibike
 #' @method etl_transform etl_citibike
 #' @importFrom utils unzip head
-#' @importFrom data.table fread fwrite 
+#' @importFrom lubridate parse_date_time
 #' @inheritParams etl::etl_extract
 #' @details This function unzips and reads in the NYC CitiBike data for years 
 #' and months specified into R. After cleaning up and reformatting, 
@@ -12,84 +14,125 @@
 etl_transform.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
   # pop up message to start
   message("Transforming raw data ...")
-  # link to the raw folder directory
-  dir <- attr(obj, "raw_dir")
-  # list the files under the raw folder
-  src <- list.files(dir, full.names = TRUE)
-  # get the base name of the files
-  files <- basename(src)
-  # connect to the load folder
-  new_dir <- attr(obj, "load_dir")
+  
   # check for valid years and months
-  year_month <- valid_year_month(years, months) %>%
-    mutate_(month = ~ifelse(month < 10, paste0("0",month), month))%>%
-    mutate_(year_month = ~paste0(year, month)) %>%
-    mutate_(zip_files = ~paste0(year_month, "-citibike-tripdata.zip")) %>%
-    mutate_(out_files = ~paste0(year_month, "-citibike-tripdata.csv"))%>%
-    filter_(~zip_files %in% files) %>%
-    mutate_(path = ~paste0(dir, "/", zip_files)) %>%
-    mutate_(out_path = ~paste0(new_dir, "/", out_files)) 
-  # zip file path
-  path <- year_month$path
-  # valid csv path
-  csv_path <- year_month$out_path
+  valid <- valid_year_month(years, months) %>%
+    mutate_(year_month = ~format(month_begin, "%Y%m"))
+  
+  # list the files under the raw folder
+  src <- data_frame(
+    path = list.files(attr(obj, "raw_dir"), pattern = "\\.zip", full.names = TRUE)
+  ) %>%
+    mutate_(month_begin = ~lubridate::date(lubridate::parse_date_time(path, orders = "%Y%m"))) %>%
+    inner_join(valid, by = "month_begin") 
+  
   # unzip files interested
-  lapply(path, function(x) unzip(x, exdir = new_dir))
+  message("Unzipping...")
+  load_files <- lapply(src$path, unzip, exdir = attr(obj, "load_dir")) %>%
+    unlist()
+  
   # the original names
-  load_files <- list.files(new_dir, full.names = TRUE)
-  # the old names in the load directory
-  oldnames <- list.files(new_dir)
-  # check if the name is in the right format
-  check_name <- function(file_name){
-    if(grepl("-citibike-tripdata", x = file_name) == FALSE){
-      new_name <- gsub("-", "", x = file_name)
-      new_name <- gsub("  Citi Bike trip data", "-citibike-tripdata", 
-                       x = new_name)
-      new_name
-    } else{
-      file_name
-    }
-  }
-  # return the new valid names
-  new_names <- do.call(rbind, lapply(load_files, function(x) check_name(x)))
+  new_files <- fix_names(load_files)
+
   # rename the files
-  file.rename(from = file.path(new_dir, oldnames), 
-              to = file.path(new_dir, year_month$out_files))
+  file.rename(from = load_files, to = new_files)
   
   # the following function takes in the file of a csv file
   # modifies the data and outputs the file under the same name
-  modify_file <- function(csv_load_path) {
-    # read the file into R
-    data <- data.table::fread(csv_load_path)
-    # rename columns
-    colnames(data) <- c("Trip_Duration", "Start_Time","Stop_Time", 
-                        "Start_Station_ID", "Start_Station_Name", 
-                        "Start_Station_Latitude", "Start_Station_Longitude",
-                        "End_Station_ID", "End_Station_Name",
-                        "End_Station_Latitude", "End_Station_Longitude",
-                        "Bike_ID", "User_Type", "Birth_Year", "Gender")
-    # check for date format
-    if(suppressWarnings(all(is.na(
-      lubridate::parse_date_time(utils::head(data$Start_Time), 
-      orders= c("mdY HMS","mdy HM")))) == FALSE)) {
-      # change the format to ymd HMS
-      data <- data %>%
-        dplyr::mutate_(Start_Time = ~lubridate::parse_date_time(Start_Time, 
-                                            orders = c("mdY HMS","mdy HM")),
-               Stop_Time = ~lubridate::parse_date_time(Stop_Time, 
-                                           orders = c("mdY HMS","mdy HM")))  
-    } else{
-      # no need to change the format
-    }
-    # change from ymd HMS to ymd HM
-    data$Start_Time <- substring(data$Start_Time, 1, 16)
-    data$Stop_Time <- substring(data$Stop_Time, 1, 16)
-    
-    # output the modified csv out
-    data.table::fwrite(x = data, csv_load_path, append = FALSE)
-    
-  }
   # apply the function to each file
-  lapply(csv_path, function(x) modify_file(x))
+  message("Modifying CSVs...")
+  lapply(new_files, modify_file)
   invisible(obj)
+}
+
+#' @importFrom readr read_csv write_csv
+
+modify_file <- function(csv_load_path) {
+  message(paste("Transforming", csv_load_path, "..."))
+  # read the file into R
+  # faster but requires extra effort
+  # data <- data.table::fread(csv_load_path)
+  # 
+  # # check for date format
+  # if(suppressWarnings(all(is.na(
+  #   lubridate::parse_date_time(utils::head(data$Start_Time), 
+  #                              orders= c("mdY HMS","mdy HM")))) == FALSE)) {
+  #   # change the format to ymd HMS
+  #   data <- data %>%
+  #     dplyr::mutate_(Start_Time = ~lubridate::parse_date_time(Start_Time, 
+  #                                                             orders = c("mdY HMS","mdy HM")),
+  #                    Stop_Time = ~lubridate::parse_date_time(Stop_Time, 
+  #                                                            orders = c("mdY HMS","mdy HM")))  
+  # } else{
+  #   # no need to change the format
+  # }
+  # # change from ymd HMS to ymd HM
+  # data$Start_Time <- substring(data$Start_Time, 1, 16)
+  # data$Stop_Time <- substring(data$Stop_Time, 1, 16)
+  
+  # slower but better with data types
+  data <- readr::read_csv(csv_load_path)
+  # rename columns
+  colnames(data) <- c("duration", "start_time","stop_time", 
+                      "start_station_id", "start_station_name", 
+                      "start_station_latitude", "start_station_longitude",
+                      "end_station_id", "end_station_name",
+                      "end_station_latitude", "end_station_longitude",
+                      "bike_id", "user_type", "birth_year", "gender")
+  
+  start_stations <- data %>%
+    group_by_(station_id = ~start_station_id) %>%
+    summarize_(num_starts = ~n(), 
+              earliest = ~min(start_time),
+              latest = ~max(stop_time),
+              num_names = ~n_distinct(start_station_name),
+              names = ~last(start_station_name),
+              # take the mean of the locations? 
+              lat = ~mean(start_station_latitude),
+              lon = ~mean(start_station_longitude))
+  
+  end_stations <- data %>%
+    group_by_(station_id = ~end_station_id) %>%
+    summarize_(num_stops = ~n(), 
+              earliest = ~min(start_time),
+              latest = ~max(stop_time),
+              num_names = ~n_distinct(end_station_name),
+              names = ~last(end_station_name),
+              # take the mean of the locations? 
+              lat = ~mean(end_station_latitude),
+              lon = ~mean(end_station_longitude))
+  stations <- start_stations %>%
+    bind_rows(end_stations) %>%
+    group_by_(~station_id) %>%
+    summarize_(name = ~first(names), 
+              earliest = ~min(earliest),
+              latest = ~max(latest),
+              num_starts = ~sum(num_starts, na.rm = TRUE),
+              num_stops = ~sum(num_stops, na.rm = TRUE),
+              lat = ~mean(lat),
+              lon = ~mean(lon))
+  
+  readr::write_csv(stations, gsub("tripdata", "stations", csv_load_path))
+  
+  # output the modified csv out
+#  data.table::fwrite(x = data, csv_load_path, append = FALSE)
+  data %>%
+    select_(~-start_station_name, 
+            ~-start_station_latitude,
+            ~-start_station_longitude,
+            ~-end_station_name,
+            ~-end_station_latitude,
+            ~-end_station_longitude) %>%
+    readr::write_csv(csv_load_path, append = FALSE)
+}
+
+
+fix_names <- function(x, ...) {
+  x %>%
+    gsub(" ", "", x = .) %>%
+    gsub("-", "", x = .) %>%
+    gsub("_", "", x = .) %>%
+    tolower() %>%
+    gsub("citibike[a-z]+", "_citibike_tripdata", x = .) %>%
+    gsub("nyc", "", x = .)
 }

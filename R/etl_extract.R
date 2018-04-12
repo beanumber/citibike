@@ -27,28 +27,34 @@ etl_extract.etl_citibike <- function(obj,  years = 2013, months = 7, ...) {
     rvest::html_nodes("key") %>%
     rvest::html_text()
   # return the list of zip files available
-  zips <- grep("*.zip", keys, value = TRUE)
+  
+  zips <- grep("^[0-9]{6}.+\\.zip$", keys, value = TRUE)
   # ignore the first file that contains data from multiple months
   zips <- zips[-1]
+  zips <- grep("jc", zips, invert = TRUE, value = TRUE)
+  
+  valid_dates <- etl::valid_year_month(years, months)
   
   # filter zips for only those months that correspond 
   # to years & months arguments from the user
-  zips_df <- data.frame(zips, date = 
-                          lubridate::parse_date_time(zips, orders = "%Y%m") +
-                          lubridate::days(1)) 
+  zips_df <- data.frame(
+    zips, 
+    month_begin = lubridate::date(lubridate::parse_date_time(zips, orders = "%Y%m"))
+  )
   # check if the date is valid
   # the date dataframe after filtering
-  zips_valid <- filter(zips_df, lubridate::year(date) %in% years & 
-                               lubridate::month(date) %in% months)
-  if(nrow(zips_valid) == 0){
+  zips_valid <- zips_df %>%
+    inner_join(valid_dates, by = "month_begin")
+  
+  if (nrow(zips_valid) == 0) {
     # pop up warning message when invalid inputs are entered
-    warning("Invalid dates ignored")
+    warning("No data available during that time range.")
   } else{
     # create the paths for files to download
     src <- paste0(raw_url, zips_valid$zips)
     # Download only those files that don't already exist
     smart_download(obj, src)
-    invisible(obj)
   }
+  invisible(obj)
 }
 

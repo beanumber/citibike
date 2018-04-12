@@ -16,26 +16,23 @@
 
 
 etl_load.etl_citibike <- function(obj, years = 2013, months = 7, ...) {
-  # connect to the load folder
-  dir <- attr(obj, "load_dir")
-  # list the files
-  src <- list.files(dir, full.names = TRUE)
-  # get the base name of the files
-  files <- basename(src)
+
+  valid <- valid_year_month(years, months) %>%
+    mutate_(year_month = ~format(month_begin, "%Y%m"))
   
-  # valid years and month; create corresponding path
-  year_month <- valid_year_month(years, months) %>%
-    mutate_(month = ~ifelse(month< 10, paste0("0",month), month))%>%
-    mutate_(year_month = ~paste0(year, month)) %>%
-    mutate_(zip_files = ~paste0(year_month, "-citibike-tripdata.csv")) %>%
-    filter_(~zip_files %in% files) %>%
-    mutate_(path = ~paste0(dir, "/", zip_files))
-  path <- year_month$path
+  # list the files under the load folder
+  src <- data_frame(
+    path = list.files(attr(obj, "load_dir"), pattern = "\\.csv", full.names = TRUE)
+  ) %>%
+    mutate_(month_begin = ~lubridate::date(lubridate::parse_date_time(path, orders = "%Y%m"))) %>%
+    inner_join(valid, by = "month_begin") %>%
+    mutate_(table = ~ifelse(grepl("tripdata", path), "trips", "station_months"))
   
   # write to Table
   message("Writing bike data to the database...")
-  lapply(path, function(x) DBI::dbWriteTable(obj$con, "trips", x, append = TRUE, 
-                                             overwrite = FALSE, ...))
+  mapply(value = src$path, name = src$table, FUN = DBI::dbWriteTable, 
+         MoreArgs = list(conn = obj$con, 
+                         append = TRUE, overwrite = FALSE, ... = ...))
   
   invisible(obj)
 }
